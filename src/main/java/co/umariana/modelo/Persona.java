@@ -3,13 +3,6 @@ package co.umariana.modelo;
 /**
  * Un miembro del árbol genealógico: su posición, su nombre y sus años de nacimiento y fallecimiento
  * (el fallecimiento es opcional: null si la persona sigue viva o no se sabe).
- *
- * La clase ya tiene sus atributos, constructor y getters. Lo que falta es {@link #validar()} (Etapa 1).
- *
- * INSTRUCCIONES PARA EL ESTUDIANTE (Etapa 1)
- * ------------------------------------------
- * Reemplace el "throw new UnsupportedOperationException" de validar() por su implementación.
- * NO modifique las pruebas (src/test).
  */
 public class Persona {
 
@@ -41,8 +34,29 @@ public class Persona {
      * </ul>
      */
     public void validar() {
-        // TODO Etapa 1
-        throw new UnsupportedOperationException("TODO: validar");
+        if (!Posicion.esValida(posicion)) {
+            throw new IllegalArgumentException("La posición \"" + posicion + "\" no es válida: use un número "
+                    + "Ahnentafel (1 a " + Posicion.MAX_AHNENTAFEL + ") o una posición d'Aboville (1.1, 1.2.1...).");
+        }
+        if (nombre == null || nombre.isBlank()) {
+            throw new IllegalArgumentException("El nombre de la posición " + posicion + " es obligatorio.");
+        }
+        if (nombre.length() > MAX_NOMBRE) {
+            throw new IllegalArgumentException("El nombre de la posición " + posicion
+                    + " no puede tener más de " + MAX_NOMBRE + " caracteres.");
+        }
+        if (nombre.indexOf(';') >= 0 || nombre.indexOf('\n') >= 0 || nombre.indexOf('\r') >= 0) {
+            throw new IllegalArgumentException("El nombre de la posición " + posicion
+                    + " no puede contener \";\" ni saltos de línea.");
+        }
+        if (nacimiento <= 0) {
+            throw new IllegalArgumentException("El año de nacimiento de la posición " + posicion
+                    + " debe ser mayor que 0.");
+        }
+        if (fallecimiento != null && fallecimiento < nacimiento) {
+            throw new IllegalArgumentException("El año de fallecimiento de la posición " + posicion
+                    + " (" + fallecimiento + ") no puede ser menor que el de nacimiento (" + nacimiento + ").");
+        }
     }
 
     public String getPosicion() { return posicion; }
